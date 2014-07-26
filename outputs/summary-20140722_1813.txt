@@ -1,0 +1,15 @@
+SYSTEM SUMMARY
+==============
+
+Current Configuration:
+Version: 2014.nab.1409Ali Build date: Apr  4 2014
+Serial number: 1145 System Key: 9fdb-7aa8-84d3-61bc
+CPU: Intel(R)Core(TM)i7-3740QMCPU@2.70GHz (4)
+System Config: AddUnreferencedShots; VaultInternalStorage; AlexaMonochrome
+Module 0: PCIE (serial=1126; type=3; config=0; fault=00)
+Module 1: Storage+LTO (serial=0; type=2; config=4; fault=00)
+
+History:
+Startups - 28
+Shutdowns - 26
+Crashes - 7

@@ -151,12 +151,40 @@ public class LogFormatter
             logentry.setCategory(category);           
             
             // Check if this is a codex.log or vaultui.log type file
-            if(file.contains("codex.log") || file.contains("vaultui.log"))               
+            if(file.contains("codex.log"))               
                 // Check if there's a valid year at the start of the line
                 if(line.startsWith("2014") || line.startsWith("2013"))
                 {
                     // Get date and time from line and set in log entry
                     cal = dateformatter.getCalendarCodexLog(line);
+                    millis = dateformatter.convertCalendarToMillis(cal);
+                    setLastGoodCalendar(cal);
+                    calstring = calformatter.calAsString(cal);
+                    logentry.setCal(calstring);
+                    logentry.setTime(millis);                      
+                }            
+                // If there's not a valid year, take the date from the last good one
+                else           
+                {
+                    cal = getLastGoodCalendar();
+                    millis = dateformatter.convertCalendarToMillis(cal);
+                    calstring = calformatter.calAsString(cal);
+                    logentry.setCal(calstring);
+                    logentry.setTime(millis);
+                    logentry.setNotes("Date/time est.");
+                    // Increment the last good date in millis in case it is used again
+                    millisincrement = millis + 10;
+                    calincrement = Calendar.getInstance();
+                    calincrement.setTimeInMillis(millisincrement);
+                    setLastGoodCalendar(calincrement);                   
+                } 
+            // Check if this is a codex.log or vaultui.log type file
+            if(file.contains("vaultui.log"))               
+                // Check if there's a valid year at the start of the line
+                if(line.startsWith("2014") || line.startsWith("2013"))
+                {
+                    // Get date and time from line and set in log entry
+                    cal = dateformatter.getCalendarVaultUiLog(line);
                     millis = dateformatter.convertCalendarToMillis(cal);
                     setLastGoodCalendar(cal);
                     calstring = calformatter.calAsString(cal);
@@ -360,11 +388,11 @@ public class LogFormatter
             minute = "0" + minute;
         }
         
-        String foldername = "logs-" + year + month + day + "_" + hour + minute + "/";
+        // String foldername = "logs-" + year + month + day + "_" + hour + minute + "/";
         
         
         // Save the formatted log entries to a CSV file
-        String filename = "logs-" + year + month + day + "_" + hour + minute + ".csv";
+        String filename = dir.toString() + "/logs-" + year + month + day + "_" + hour + minute + ".csv";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) 
         {
             writer.append("TIME_MILLIS,DATE,CONTENT,NOTES,SOURCELOG,CATEGORY");
@@ -395,7 +423,7 @@ public class LogFormatter
         // Things to include:        
         //   
         // ERRORS
-        String summaryname = "summary-" + year + month + day + "_" + hour + minute + ".txt";
+        String summaryname = dir.toString() + "/summary-" + year + month + day + "_" + hour + minute + ".txt";
         String softwareversion = null;
         String serialandkey = null;
         String cpuspec = null;
@@ -533,13 +561,16 @@ public class LogFormatter
             {
                 logs.add("codex.log");
                 logs.add("codex.log.0");
-//                logs.add("codex.log.1");
-//                logs.add("codex.log.2");
-//                logs.add("codex.log.3");
-//                logs.add("codex.log.4");
-//                logs.add("codex.log.5");
-//                logs.add("codex.log.6");
-                // ADD MORE TO CHECK LIMITS
+                logs.add("codex.log.1");
+                logs.add("codex.log.2");
+                logs.add("codex.log.3");
+                logs.add("codex.log.4");
+                logs.add("codex.log.5");
+                logs.add("codex.log.6");
+                logs.add("codex.log.7");
+                logs.add("codex.log.8");
+                logs.add("codex.log.9");
+                
             }            
             if(CodexLogViewer.userargs[i].contains("m"))
             {
@@ -548,13 +579,24 @@ public class LogFormatter
             if(CodexLogViewer.userargs[i].contains("v"))
             {
                 logs.add("vaultui.log");
+                logs.add("vaultui.log.0");
+                logs.add("vaultui.log.1");
+                logs.add("vaultui.log.2");
+                logs.add("vaultui.log.3");
+                logs.add("vaultui.log.4");
+                logs.add("vaultui.log.5");
+                logs.add("vaultui.log.6");
+                logs.add("vaultui.log.7");
+                logs.add("vaultui.log.8");
+                logs.add("vaultui.log.9");
+                
             }
             // Keep drserver logs last to ensure System Summary accurate.
             if(CodexLogViewer.userargs[i].contains("d"))
             {
                 logs.add("drserver.0.log");
-                // logs.add("drserver.1.log");
-                //logs.add("drserver.2.log");
+                logs.add("drserver.1.log");
+                logs.add("drserver.2.log");
             }  
         }
         return logs;
